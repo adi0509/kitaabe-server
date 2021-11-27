@@ -4,6 +4,7 @@ import (
 	"kitaabe2/apis/controller"
 	"kitaabe2/mongo"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,6 +21,7 @@ func main() {
 	controller.CreateMediaIndex(database)
 
 	r := gin.Default()
+	r.Use(cors.Default())
 
 	//********USER ROUTES********
 	//insert new user
