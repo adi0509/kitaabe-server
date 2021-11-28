@@ -144,10 +144,11 @@ func GetItemByFilter(ctx *gin.Context) {
 
 	var filter, option interface{}
 	filter = bson.D{
+		{"item_name", bson.M{"$regex": input.Search, "$options": "i"}},
 		{"subcategory_id", bson.M{"$regex": input.Subcategory_id, "$options": "i"}},
 		{"category_id", bson.M{"$regex": input.Category_id, "$options": "i"}},
-		{"item_name", bson.M{"$regex": input.Search, "$options": "i"}},
 		{"university", bson.M{"$regex": input.University, "$options": "i"}},
+		{"available_in_city", bson.M{"$regex": input.Available_in_city, "$options": "i"}},
 	}
 
 	option = bson.D{}

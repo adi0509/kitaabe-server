@@ -45,10 +45,11 @@ type UpdateItemInput struct {
 }
 
 type FilterItemInput struct {
-	Category_id    string `json:"category_id"`
-	Subcategory_id string `json:"subcategory_id"`
-	Search         string `json:"search"`
-	University     string `json:"university"`
+	Category_id       string `json:"category_id"`
+	Subcategory_id    string `json:"subcategory_id"`
+	Search            string `json:"search"`
+	University        string `json:"university"`
+	Available_in_city string `json:"available_in_city"`
 }
 
 func (item *Item) BeforeCreate() (err error) {

@@ -50,7 +50,7 @@ func main() {
 	//********CATEGORY ROUTES********
 	//insert new category
 	r.POST("/api/category", controller.CreateCategory)
-	//insert new category
+	//get all category
 	r.GET("/api/category/all", controller.GetAllCategory)
 	//get category by id
 	r.GET("/api/category/id/:id", controller.GetCategoryWithId)
@@ -62,7 +62,7 @@ func main() {
 	//********SUBCATEGORY ROUTES********
 	//insert new subcategory
 	r.POST("/api/subcategory", controller.CreateSubcategory)
-	//insert new category
+	//get all subcategory
 	r.GET("/api/subcategory/all", controller.GetAllSubcategory)
 	//get subcategory by id
 	r.GET("/api/subcategory/id/:id", controller.GetSubcategoryWithId)
