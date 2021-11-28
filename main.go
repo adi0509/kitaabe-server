@@ -74,6 +74,8 @@ func main() {
 	//********Media ROUTES********
 	//insert new media
 	r.POST("/api/media", controller.CreateMedia)
+	//insert new media
+	r.POST("/api/media/upload", controller.UploadMedia)
 	//get subcategory by id
 	r.GET("/api/media/mediaid/:id", controller.GetMediaWithMediaId)
 	//get subcategory by name

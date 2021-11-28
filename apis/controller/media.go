@@ -1,10 +1,15 @@
 package controller
 
 import (
+	"fmt"
 	"kitaabe2/apis/model"
 	"kitaabe2/mongo"
 	"net/http"
 
+	"context"
+
+	"github.com/cloudinary/cloudinary-go"
+	"github.com/cloudinary/cloudinary-go/api/uploader"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -81,8 +86,8 @@ func GetMediaWithItemId(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"data": categories})
 }
 
-// POST /user
-// Create a new user
+// POST /media
+// Create a new media
 func CreateMedia(c *gin.Context) {
 	var input model.Media
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -100,6 +105,26 @@ func CreateMedia(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"status": media})
+}
+
+// POST
+// upload media to cloudinary
+func UploadMedia(c *gin.Context) {
+	file, header, err := c.Request.FormFile("image")
+	if err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("file err : %s", err.Error()))
+		return
+	}
+
+	filename := header.Filename
+
+	//upload it to cloudinary
+	cld, _ := cloudinary.NewFromParams("dzwj8f2jn", "659158992918854", "_ZdsEMQT0zuGst5KVxBWKPetMRU")
+	resp, err := cld.Upload.Upload(context.Background(), file, uploader.UploadParams{PublicID: filename})
+	if err != nil {
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"url": resp.URL})
 }
 
 // Update a user
