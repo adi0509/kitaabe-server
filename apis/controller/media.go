@@ -27,6 +27,7 @@ func GetMediaWithMediaId(ctx *gin.Context) {
 	id, err := primitive.ObjectIDFromHex(param)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
+		return
 	}
 	var filter, option interface{}
 	filter = bson.D{
@@ -37,6 +38,7 @@ func GetMediaWithMediaId(ctx *gin.Context) {
 	cursor, err := mongo.Query(mediaDatabase, mediaCollection, filter, option)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	var medias []primitive.M
 	for cursor.Next(mongo.Context) {
@@ -44,6 +46,7 @@ func GetMediaWithMediaId(ctx *gin.Context) {
 		err := cursor.Decode(&media)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 		medias = append(medias, media)
 	}
@@ -63,6 +66,7 @@ func GetMediaWithItemId(ctx *gin.Context) {
 	cursor, err := mongo.Query(mediaDatabase, mediaCollection, filter, option)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	var categories []primitive.M
 	for cursor.Next(mongo.Context) {
@@ -70,6 +74,7 @@ func GetMediaWithItemId(ctx *gin.Context) {
 		err := cursor.Decode(&media)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 		categories = append(categories, media)
 	}

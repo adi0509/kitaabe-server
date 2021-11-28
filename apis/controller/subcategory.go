@@ -22,12 +22,36 @@ func CreateSubcategoryIndex(dbName string) {
 	subcategoryPrimaryKey = "_id"
 }
 
+// Get all subcategory
+func GetAllSubcategory(ctx *gin.Context) {
+	var filter, option interface{}
+	filter = bson.D{}
+	option = bson.D{}
+	cursor, err := mongo.Query(subcategoryDatabase, subcategoryCollection, filter, option)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var subcategories []primitive.M
+	for cursor.Next(mongo.Context) {
+		var subcategory bson.M
+		err := cursor.Decode(&subcategory)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		subcategories = append(subcategories, subcategory)
+	}
+	ctx.JSON(http.StatusOK, gin.H{"data": subcategories})
+}
+
 // Get single subcategory
 func GetSubcategoryWithId(ctx *gin.Context) {
 	param := ctx.Param("id")
 	id, err := primitive.ObjectIDFromHex(param)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
+		return
 	}
 	var filter, option interface{}
 	filter = bson.D{
@@ -38,6 +62,7 @@ func GetSubcategoryWithId(ctx *gin.Context) {
 	cursor, err := mongo.Query(subcategoryDatabase, subcategoryCollection, filter, option)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	var subcategories []primitive.M
 	for cursor.Next(mongo.Context) {
@@ -45,6 +70,7 @@ func GetSubcategoryWithId(ctx *gin.Context) {
 		err := cursor.Decode(&subcategory)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 		subcategories = append(subcategories, subcategory)
 	}
@@ -64,6 +90,7 @@ func GetSubcategoryWithName(ctx *gin.Context) {
 	cursor, err := mongo.Query(subcategoryDatabase, subcategoryCollection, filter, option)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	var subcategories []primitive.M
 	for cursor.Next(mongo.Context) {
@@ -71,6 +98,7 @@ func GetSubcategoryWithName(ctx *gin.Context) {
 		err := cursor.Decode(&subcategory)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 		subcategories = append(subcategories, subcategory)
 	}

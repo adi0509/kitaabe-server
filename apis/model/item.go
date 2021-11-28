@@ -48,6 +48,7 @@ type FilterItemInput struct {
 	Category_id    string `json:"category_id"`
 	Subcategory_id string `json:"subcategory_id"`
 	Search         string `json:"search"`
+	University     string `json:"university"`
 }
 
 func (item *Item) BeforeCreate() (err error) {

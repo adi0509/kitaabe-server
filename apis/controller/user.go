@@ -33,6 +33,7 @@ func GetUser(ctx *gin.Context) {
 	cursor, err := mongo.Query(userDatabase, userCollection, filter, option)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	var users []primitive.M
 	for cursor.Next(mongo.Context) {
@@ -114,6 +115,7 @@ func Login(c *gin.Context) {
 	cursor, err := mongo.Query(userDatabase, userCollection, filter, option)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	var user primitive.M

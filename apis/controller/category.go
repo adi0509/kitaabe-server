@@ -22,12 +22,36 @@ func CreateCategoryIndex(dbName string) {
 	categoryPrimaryKey = "_id"
 }
 
+// Get all category
+func GetAllCategory(ctx *gin.Context) {
+	var filter, option interface{}
+	filter = bson.D{}
+	option = bson.D{}
+	cursor, err := mongo.Query(categoryDatabase, categoryCollection, filter, option)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var categories []primitive.M
+	for cursor.Next(mongo.Context) {
+		var category bson.M
+		err := cursor.Decode(&category)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		categories = append(categories, category)
+	}
+	ctx.JSON(http.StatusOK, gin.H{"data": categories})
+}
+
 // Get single category
 func GetCategoryWithId(ctx *gin.Context) {
 	param := ctx.Param("id")
 	id, err := primitive.ObjectIDFromHex(param)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
+		return
 	}
 	var filter, option interface{}
 	filter = bson.D{
@@ -38,6 +62,7 @@ func GetCategoryWithId(ctx *gin.Context) {
 	cursor, err := mongo.Query(categoryDatabase, categoryCollection, filter, option)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	var categories []primitive.M
 	for cursor.Next(mongo.Context) {
@@ -45,6 +70,7 @@ func GetCategoryWithId(ctx *gin.Context) {
 		err := cursor.Decode(&category)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 		categories = append(categories, category)
 	}
@@ -71,6 +97,7 @@ func GetCategoryWithName(ctx *gin.Context) {
 		err := cursor.Decode(&category)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 		categories = append(categories, category)
 	}

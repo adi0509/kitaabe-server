@@ -28,6 +28,7 @@ func GetItemById(ctx *gin.Context) {
 	id, err := primitive.ObjectIDFromHex(param)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
+		return
 	}
 	var filter, option interface{}
 	filter = bson.D{
@@ -38,6 +39,7 @@ func GetItemById(ctx *gin.Context) {
 	cursor, err := mongo.Query(itemDatabase, itemCollection, filter, option)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	var items []primitive.M
 	for cursor.Next(mongo.Context) {
@@ -45,6 +47,7 @@ func GetItemById(ctx *gin.Context) {
 		err := cursor.Decode(&item)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 		items = append(items, item)
 	}
@@ -64,6 +67,7 @@ func GetItemByName(ctx *gin.Context) {
 	cursor, err := mongo.Query(itemDatabase, itemCollection, filter, option)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	var items []primitive.M
 	for cursor.Next(mongo.Context) {
@@ -71,6 +75,7 @@ func GetItemByName(ctx *gin.Context) {
 		err := cursor.Decode(&item)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 		items = append(items, item)
 	}
@@ -90,6 +95,7 @@ func GetItemBySeller(ctx *gin.Context) {
 	cursor, err := mongo.Query(itemDatabase, itemCollection, filter, option)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	var items []primitive.M
 	for cursor.Next(mongo.Context) {
@@ -97,6 +103,7 @@ func GetItemBySeller(ctx *gin.Context) {
 		err := cursor.Decode(&item)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 		items = append(items, item)
 	}
@@ -140,12 +147,14 @@ func GetItemByFilter(ctx *gin.Context) {
 		{"subcategory_id", bson.M{"$regex": input.Subcategory_id, "$options": "i"}},
 		{"category_id", bson.M{"$regex": input.Category_id, "$options": "i"}},
 		{"item_name", bson.M{"$regex": input.Search, "$options": "i"}},
+		{"university", bson.M{"$regex": input.University, "$options": "i"}},
 	}
 
 	option = bson.D{}
 	cursor, err := mongo.Query(itemDatabase, itemCollection, filter, option)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	var items []primitive.M
 	for cursor.Next(mongo.Context) {
@@ -153,6 +162,7 @@ func GetItemByFilter(ctx *gin.Context) {
 		err := cursor.Decode(&item)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 		items = append(items, item)
 	}
