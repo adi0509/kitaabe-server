@@ -129,8 +129,3 @@ func UpdateMedia(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"status": "successfully updated"})
 }
-
-// {
-//  "item_id": "61922e94d70a055596c93677",
-// 	"url": "googl.com"
-// }

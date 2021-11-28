@@ -199,20 +199,3 @@ func UpdateItem(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"status": "successfully updated"})
 }
-
-// {
-//  "_id": "61922e94d70a055596c93677"
-// 	"item_id": "1",
-// 	"item_name": "1",
-// 	"item_description": "1",
-// 	"price": "1",
-// 	"seller_id": "1",
-// 	"available_in_city": "1",
-// 	"category_id": "1",
-// 	"subcategory_id": "1",
-// 	"status": "1",
-// 	"university": "1",
-// 	"listed_on": "1",
-// 	"created_at": "1",
-// 	"updated_at": "1"
-// }

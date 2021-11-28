@@ -115,11 +115,17 @@ func Login(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
+
 	var user primitive.M
 	cursor.Next(mongo.Context)
+
 	err = cursor.Decode(&user)
+	if user == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "Error: user not found"})
+		return
+	}
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "Error: " + err.Error()})
 		return
 	}
 	pass := fmt.Sprint(user["password"])
@@ -127,18 +133,8 @@ func Login(c *gin.Context) {
 	// check password
 	err = model.ComparePassword(pass, input.Password)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Password not matched"})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "Error: " + "Password not matched"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"status": "valid user"})
 }
-
-// {
-// 	"userid": "1",
-// 	"name": "1",
-// 	"email": "1",
-// 	"password": "1",
-// 	"university": "1",
-// 	"created_at": "1",
-// 	"updated_at": "1"
-// }

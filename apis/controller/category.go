@@ -132,8 +132,3 @@ func UpdateCategory(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"status": "successfully updated"})
 }
-
-// {
-//     "_id": "619516e22a5cec25d461fc6a",
-// 	"category_name": "hello update"
-// }
