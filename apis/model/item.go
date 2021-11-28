@@ -44,8 +44,13 @@ type UpdateItemInput struct {
 	University        string `json:"university"`
 }
 
+type FilterItemInput struct {
+	Category_id    string `json:"category_id"`
+	Subcategory_id string `json:"subcategory_id"`
+	Search         string `json:"search"`
+}
+
 func (item *Item) BeforeCreate() (err error) {
-	// user.ID = uuid.New().String()
 	if err != nil {
 		return err
 	}

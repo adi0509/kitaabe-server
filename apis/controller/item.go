@@ -77,6 +77,32 @@ func GetItemByName(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"data": items})
 }
 
+// Get item by seller email
+func GetItemBySeller(ctx *gin.Context) {
+	param := ctx.Param("email")
+
+	var filter, option interface{}
+	filter = bson.D{
+		{"seller_id", param},
+	}
+
+	option = bson.D{}
+	cursor, err := mongo.Query(itemDatabase, itemCollection, filter, option)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+	var items []primitive.M
+	for cursor.Next(mongo.Context) {
+		var item bson.M
+		err := cursor.Decode(&item)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		items = append(items, item)
+	}
+	ctx.JSON(http.StatusOK, gin.H{"data": items})
+}
+
 // POST /user
 // Create a new user
 func CreateItem(c *gin.Context) {
@@ -98,6 +124,39 @@ func CreateItem(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"status": item})
+}
+
+// POST /api/item/all
+// get all items with filter
+func GetItemByFilter(ctx *gin.Context) {
+	var input model.FilterItemInput
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var filter, option interface{}
+	filter = bson.D{
+		{"subcategory_id", bson.M{"$regex": input.Subcategory_id, "$options": "i"}},
+		{"category_id", bson.M{"$regex": input.Category_id, "$options": "i"}},
+		{"item_name", bson.M{"$regex": input.Search, "$options": "i"}},
+	}
+
+	option = bson.D{}
+	cursor, err := mongo.Query(itemDatabase, itemCollection, filter, option)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+	var items []primitive.M
+	for cursor.Next(mongo.Context) {
+		var item bson.M
+		err := cursor.Decode(&item)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		items = append(items, item)
+	}
+	ctx.JSON(http.StatusOK, gin.H{"data": items})
 }
 
 // Update a user

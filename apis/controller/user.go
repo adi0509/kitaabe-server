@@ -120,6 +120,7 @@ func Login(c *gin.Context) {
 	err = cursor.Decode(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	pass := fmt.Sprint(user["password"])
 
