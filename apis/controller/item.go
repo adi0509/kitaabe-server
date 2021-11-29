@@ -147,13 +147,21 @@ func GetItemByFilter(ctx *gin.Context) {
 	}
 
 	var filter interface{}
-	filter = bson.M{
-		"$and": []bson.M{
-			bson.M{"$text": bson.M{"$search": input.Search}},
-			bson.M{"category_id": bson.M{"$regex": input.Category_id, "$options": "i"}},
-			bson.M{"subcategory_id": bson.M{"$regex": input.Subcategory_id, "$options": "i"}},
-			bson.M{"status": "1"},
-		},
+	if input.Search == "" {
+		filter = bson.D{
+			{"subcategory_id", bson.M{"$regex": input.Subcategory_id, "$options": "i"}},
+			{"category_id", bson.M{"$regex": input.Category_id, "$options": "i"}},
+			{"status", "1"},
+		}
+	} else {
+		filter = bson.M{
+			"$and": []bson.M{
+				bson.M{"$text": bson.M{"$search": input.Search}},
+				bson.M{"category_id": bson.M{"$regex": input.Category_id, "$options": "i"}},
+				bson.M{"subcategory_id": bson.M{"$regex": input.Subcategory_id, "$options": "i"}},
+				bson.M{"status": "1"},
+			},
+		}
 	}
 
 	collection := mongo.Client.Database(itemDatabase).Collection(itemCollection)
