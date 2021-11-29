@@ -133,7 +133,6 @@ func Login(c *gin.Context) {
 	pass := fmt.Sprint(user["password"])
 	mongoId := user["_id"]
 	_id := mongoId.(primitive.ObjectID).Hex()
-	// _id, err := primitive.ObjectIDFromHex(user["_id"])
 
 	// check password
 	err = model.ComparePassword(pass, input.Password)

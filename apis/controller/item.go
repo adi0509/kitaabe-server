@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"kitaabe2/apis/model"
 	"kitaabe2/mongo"
 	"net/http"
@@ -20,6 +21,9 @@ func CreateItemIndex(dbName string) {
 	itemDatabase = dbName
 	itemCollection = "item"
 	itemPrimaryKey = "_id"
+	if err := mongo.AddTextIndexItem(itemDatabase, itemCollection); err != nil {
+		return
+	}
 }
 
 // Get single users
@@ -142,17 +146,18 @@ func GetItemByFilter(ctx *gin.Context) {
 		return
 	}
 
-	var filter, option interface{}
-	filter = bson.D{
-		{"item_name", bson.M{"$regex": input.Search, "$options": "i"}},
-		{"subcategory_id", bson.M{"$regex": input.Subcategory_id, "$options": "i"}},
-		{"category_id", bson.M{"$regex": input.Category_id, "$options": "i"}},
-		{"university", bson.M{"$regex": input.University, "$options": "i"}},
-		{"available_in_city", bson.M{"$regex": input.Available_in_city, "$options": "i"}},
+	var filter interface{}
+	filter = bson.M{
+		"$and": []bson.M{
+			bson.M{"$text": bson.M{"$search": input.Search}},
+			bson.M{"category_id": bson.M{"$regex": input.Category_id, "$options": "i"}},
+			bson.M{"subcategory_id": bson.M{"$regex": input.Subcategory_id, "$options": "i"}},
+			bson.M{"status": "1"},
+		},
 	}
 
-	option = bson.D{}
-	cursor, err := mongo.Query(itemDatabase, itemCollection, filter, option)
+	collection := mongo.Client.Database(itemDatabase).Collection(itemCollection)
+	cursor, err := collection.Find(context.TODO(), filter)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -167,6 +172,7 @@ func GetItemByFilter(ctx *gin.Context) {
 		}
 		items = append(items, item)
 	}
+
 	ctx.JSON(http.StatusOK, gin.H{"data": items})
 }
 

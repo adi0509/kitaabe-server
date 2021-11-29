@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/integration/mtest"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/x/bsonx"
 )
 
 var Client *mongo.Client
@@ -40,14 +41,38 @@ func Connect(uri string) (*mongo.Client, context.Context,
 
 func AddIndex(dbName, collection, id string) error {
 	serviceCollection := Client.Database(dbName).Collection(collection)
-	indexName, err := serviceCollection.Indexes().CreateOne(mtest.Background, mongo.IndexModel{
+	_, err := serviceCollection.Indexes().CreateOne(mtest.Background, mongo.IndexModel{
 		Keys:    bson.D{{Key: id, Value: 1}},
 		Options: options.Index().SetUnique(true),
 	})
 	if err != nil {
 		return err
 	}
-	fmt.Println("index name: " + indexName)
+	return nil
+}
+
+func AddTextIndexItem(dbName, collection string) error {
+	coll := Client.Database(dbName).Collection(collection)
+	index := []mongo.IndexModel{
+
+		{
+			Keys: bsonx.Doc{
+				{Key: "item_name", Value: bsonx.String("text")},
+				{Key: "item_description", Value: bsonx.String("text")},
+				{Key: "university", Value: bsonx.String("text")},
+				{Key: "available_in_city", Value: bsonx.String("text")}},
+			Options: options.Index().SetWeights(bson.D{
+				{"item_name", 5},
+				{"description", 3},
+			}),
+		},
+	}
+	opts := options.CreateIndexes().SetMaxTime(10 * time.Second)
+	_, err := coll.Indexes().CreateMany(context.Background(), index, opts)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
 	return nil
 }
 
