@@ -131,6 +131,9 @@ func Login(c *gin.Context) {
 		return
 	}
 	pass := fmt.Sprint(user["password"])
+	mongoId := user["_id"]
+	_id := mongoId.(primitive.ObjectID).Hex()
+	// _id, err := primitive.ObjectIDFromHex(user["_id"])
 
 	// check password
 	err = model.ComparePassword(pass, input.Password)
@@ -138,5 +141,6 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "Error: " + "Password not matched"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": "valid user"})
+	// c.JSON(http.StatusOK, gin.H{"status": "valid user"})
+	c.JSON(http.StatusOK, gin.H{"status": "valid user", "id": _id})
 }

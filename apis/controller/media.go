@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"kitaabe2/apis/model"
 	"kitaabe2/mongo"
 	"net/http"
@@ -112,7 +111,7 @@ func CreateMedia(c *gin.Context) {
 func UploadMedia(c *gin.Context) {
 	file, header, err := c.Request.FormFile("image")
 	if err != nil {
-		c.String(http.StatusBadRequest, fmt.Sprintf("file err : %s", err.Error()))
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -122,6 +121,7 @@ func UploadMedia(c *gin.Context) {
 	cld, _ := cloudinary.NewFromParams("dzwj8f2jn", "659158992918854", "_ZdsEMQT0zuGst5KVxBWKPetMRU")
 	resp, err := cld.Upload.Upload(context.Background(), file, uploader.UploadParams{PublicID: filename})
 	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"url": resp.URL})
