@@ -129,12 +129,13 @@ func CreateItem(c *gin.Context) {
 	item.BeforeCreate()
 
 	//Insert it into mongoDB
-	_, err := mongo.InsertOne(itemDatabase, itemCollection, item)
+	result, err := mongo.InsertOne(itemDatabase, itemCollection, item)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": item})
+	_id := result.InsertedID
+	c.JSON(http.StatusOK, gin.H{"status": item, "_id": _id})
 }
 
 // POST /api/item/all
