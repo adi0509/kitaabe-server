@@ -9,6 +9,7 @@ type Item struct {
 	Item_description  string `json:"item_description"`
 	Price             string `json:"price"`
 	Seller_id         string `json:"seller_id"`
+	Contact_info      string `json:"contact_info"`
 	Available_in_city string `json:"available_in_city"`
 	Category_id       string `json:"category_id"`
 	Subcategory_id    string `json:"subcategory_id"`
@@ -24,6 +25,7 @@ type CreateItemInput struct {
 	Item_description  string `json:"item_description"`
 	Price             string `json:"price"`
 	Seller_id         string `json:"seller_id"`
+	Contact_info      string `json:"contact_info"`
 	Available_in_city string `json:"available_in_city"`
 	Category_id       string `json:"category_id"`
 	Subcategory_id    string `json:"subcategory_id"`
@@ -37,6 +39,7 @@ type UpdateItemInput struct {
 	Item_description  string `json:"item_description"`
 	Price             string `json:"price"`
 	Seller_id         string `json:"seller_id"`
+	Contact_info      string `json:"contact_info"`
 	Available_in_city string `json:"available_in_city"`
 	Category_id       string `json:"category_id"`
 	Subcategory_id    string `json:"subcategory_id"`
