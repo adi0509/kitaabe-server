@@ -7,6 +7,7 @@ type Item struct {
 	// Item_id           string `json:"_id"`
 	Item_name         string `json:"item_name"`
 	Item_description  string `json:"item_description"`
+	Promoted          string `json:"promoted"`
 	Price             string `json:"price"`
 	Seller_id         string `json:"seller_id"`
 	Contact_info      string `json:"contact_info"`
