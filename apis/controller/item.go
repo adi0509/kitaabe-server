@@ -124,7 +124,7 @@ func CreateItem(c *gin.Context) {
 	}
 
 	// Create item
-	item := model.Item{Item_name: input.Item_name, Item_description: input.Item_description, Promoted: "", Price: input.Price, Seller_id: input.Seller_id, Contact_info: input.Contact_info, Available_in_city: input.Available_in_city, Category_id: input.Category_id, Subcategory_id: input.Subcategory_id, Status: input.Status, University: input.University, Listed_on: "", Created_at: "", Updated_at: ""}
+	item := model.Item{Item_name: input.Item_name, Item_description: input.Item_description, Promoted: "", Image: input.Image, Price: input.Price, Seller_id: input.Seller_id, Contact_info: input.Contact_info, Available_in_city: input.Available_in_city, Category_id: input.Category_id, Subcategory_id: input.Subcategory_id, Status: input.Status, University: input.University, Listed_on: "", Created_at: "", Updated_at: ""}
 
 	item.BeforeCreate()
 
